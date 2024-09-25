@@ -1,5 +1,3 @@
-import pytest
-
 from main import sample_cities
 from main import cities_dataframe
 
