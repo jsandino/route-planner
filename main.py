@@ -3,34 +3,26 @@
 Optimal Route Calculator
 """
 import click
+import geopy.geocoders
+import pandas as pd
+import geopy
 
 sample_cities = [
     "Toronto",
     "Montreal",
-    "Calgary",
     "Ottawa",
-    "Edmonton",
-    "Winnipeg",
     "Mississauga",
-    "Vancouver",
     "Brampton",
     "Hamilton",
-    "Surrey",
     "Quebec City",
     "Halifax",
     "Laval",
     "London",
     "Markham",
     "Vaughan",
-    "Gatineau",
-    "Saskatoon",
     "Kitchener",
-    "Longueuil",
-    "Burnaby",
     "Windsor",
-    "Regina",
-    "Oakvile",
-    "Richmond",
+    "Oakville",
     "Richmond Hill",
     "Burlington",
 ]
@@ -38,6 +30,19 @@ sample_cities = [
 
 def main(n):
     print(n)
+
+
+def cities_dataframe() -> pd.DataFrame:
+    geolocator = geopy.geocoders.Nominatim(user_agent="tsp_pandas")
+    cities = sample_cities.copy()
+    lats = []
+    lons = []
+    for city in cities:
+        loc = geolocator.geocode(city, country_codes="ca")
+        lats.append(loc.latitude)
+        lons.append(loc.longitude)
+        print(f"City '{city}': lat: {loc.latitude}, lon: {loc.longitude}")
+    return pd.DataFrame({"city": cities, "lat": lats, "lon": lons})
 
 
 @click.group

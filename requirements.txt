@@ -3,3 +3,5 @@ pytest
 click
 black
 pytest-cov
+geopy
+pandas
