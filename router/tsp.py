@@ -10,8 +10,48 @@ The general idea is to:
 """
 
 from random import shuffle
-from geopy import distance
+from geopy import distance as gdist
 import pandas as pd
+
+from router.route import Route
+
+
+def find_shortest_route(
+    cities_df: pd.DataFrame, n: int, show_all: bool = False
+) -> tuple[float, list[str]]:
+    """
+    Calculates the distance between cities for n random route configurations.
+
+    The shortest distance, along with the associated route is returned.
+
+    Parameters:
+        cities_df: DataFrame of cities ("city", "lat", "lon")
+        n: number of times that a random route distance should be calculated
+
+    Returns:
+        The shortest distance, along with the associated route.
+    """
+    routes = dict()
+    for _ in range(n):
+        distance, route = random_route_distance(cities_df)
+        routes[distance] = route
+
+    shortest = min(routes.keys())
+
+    show_routes(routes, show_all)
+
+    return shortest, routes[shortest]
+
+
+def show_routes(routes: dict[float : list[str]], show: bool):
+    """
+    Shows all route calculations to standard out.
+    """
+
+    if show:
+        print()
+        for distance, route in routes.items():
+            print(f"{Route(distance, route)}\n")
 
 
 def random_route_distance(cities_df: pd.DataFrame) -> tuple[float, list[str]]:
@@ -44,7 +84,7 @@ def calculate_route(cities: list[str], df: pd.DataFrame) -> tuple[float, list[st
 def calc_distance(source, destination, df) -> float:
     from_city = lat_lon_for(source, df)
     to_city = lat_lon_for(destination, df)
-    return distance.distance(from_city, to_city).miles
+    return gdist.distance(from_city, to_city).miles
 
 
 def lat_lon_for(city: str, df: pd.DataFrame) -> tuple[float, float]:
