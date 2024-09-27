@@ -7,6 +7,7 @@ import pandas as pd
 
 from router.cities import Cities
 from router.route import Route
+from router.timed import timed
 from router.tsp import find_shortest_route
 
 sample_cities = [
@@ -32,7 +33,7 @@ sample_cities = [
 
 def main(n, s):
     df = cities_dataframe()
-    shortest, route = find_shortest_route(df, n, s)
+    shortest, route = get_shortest_route(df, n, s)
     print("\n" + "=" * 50)
     print("Shortest route found:")
     print(f"{Route(shortest, route)}")
@@ -40,9 +41,16 @@ def main(n, s):
     # print(df.head())
 
 
+@timed
 def cities_dataframe(cities: list[str] = None) -> pd.DataFrame:
     cities = cities or sample_cities
-    return Cities(cities).load()
+    df = Cities(cities).load()
+    return df
+
+
+@timed
+def get_shortest_route(df, n, s) -> tuple[float, list[str]]:
+    return find_shortest_route(df, n, s)
 
 
 @click.group
