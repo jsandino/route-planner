@@ -18,7 +18,6 @@ sample_cities = [
     "Brampton",
     "Hamilton",
     "Quebec City",
-    "Halifax",
     "Laval",
     "London",
     "Markham",
@@ -31,14 +30,20 @@ sample_cities = [
 ]
 
 
-def main(n, s):
+def main(count, show, save):
     df = cities_dataframe()
-    shortest, route = get_shortest_route(df, n, s)
+    save_cities(df, save)
+    shortest, route = get_shortest_route(df, count, show)
     print("\n" + "=" * 50)
     print("Shortest route found:")
     print(f"{Route(shortest, route)}")
     print("=" * 50)
     # print(df.head())
+
+
+def save_cities(df: pd.DataFrame, save: bool):
+    if save:
+        df.to_csv("data/cities.csv")
 
 
 @timed
@@ -59,16 +64,21 @@ def commands():
 
 
 @commands.command("run")
-@click.option("-n", default=10, help="Total number of times to calculate a route.")
-@click.option("-s", is_flag=True, default=False, help="Show route calculation output.")
-def run(n, s):
+@click.option("--count", default=10, help="Total number of times to calculate a route.")
+@click.option(
+    "--show", is_flag=True, default=False, help="Show route calculation output."
+)
+@click.option(
+    "--save", is_flag=True, default=False, help="Save cities data frame to csv file."
+)
+def run(count, show, save):
     """
-    Run the route calculator n number of times.
+    Run the route calculator multiple times for a number of random routes.
 
-    Example: ./main.py run -n 10
+    Example: ./main.py run --count 10
     """
-    print(f"Running route calculator {n} times")
-    main(n, s)
+    print(f"Running route calculator {count} times")
+    main(count, show, save)
 
 
 if __name__ == "__main__":
